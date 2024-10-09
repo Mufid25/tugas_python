@@ -1,3 +1,26 @@
+"""
+Membuat fungsi untuk mengubah mengubah tag dengan mengetahui index mulai dan index akhir.
+
+Contoh:
+    Input:
+        text: Aku sedang belajar python
+        start: 4
+        end: 9
+    Output:
+        Aku <b>sedang</b> belajar python
+
+
+    Input:
+        text: Aku <i>sedang</i> belajar python
+        start: 4
+        end: 9
+    Output:
+        text: Aku <i><b>sedang</b></i> belajar python
+
+
+Test:
+    Jalankan file ini, bila tidak ada error maka test berhasil.
+"""
 def index_text(text: str):
     """
     return list yang berisi dictionary dengan format {'char': '<character text>', 'index': '<index character>'}
@@ -33,28 +56,46 @@ def index_text(text: str):
     characters = []
     
     index = 0
+    inside_tag = False
+
+    #  6. tambahkan sebuah variable untuk check apakah kamu sedang berada di dalam tag, atau diluar tag. Variable ini isinya True atau False. Akan diubah sesuai kriteria
+    # dibawah nanti. Maksud tag adalah `<a>` atau `</b>` atau semisalnya.
     
    
-    
+    # TODO: 1. loop text
     for huruf in text:
-        huruf_dict = {'char': huruf, 'index': index}
+        if huruf == '<':
+            inside_tag = True
+            characters.append({'char': huruf, 'index': None})
+        elif huruf == '>':
+            inside_tag = False
+            characters.append({'char': huruf, 'index': None})
+        elif inside_tag:
+            characters.append({'char': huruf, 'index': None})
+        else:
+            characters.append({'char': huruf, 'index': index})
+           
+        #  7. buat if else disini sebagai ganti dari  2 -  4 dengan ketentuan:
+        # 1. bila huruf adalah '<' maka value dari 'index' adalah None dan variable dari  6 menjadi False, index tidak boleh ditambah
+        # 2. bila huruf adalah '>' maka value dari 'index' adalah None dan variable dari 6 menjadi True, index tidak boleh ditambah
+        # 3. bila variable dari  6 masih False, 'index' adalah None, dan index tidak boleh ditambah
+        # 4. selain itu, value dari 'index' adalah index, dan index boleh ditambah lagi
+        
+        #  2. setiap character buat dictionary sementara dengan format: {'char': character, 'index': index}
+        
        
-    
-        characters.append(huruf_dict)
-        index += 1
+        #  3. tambahkan dictionary sementara ke characters list
+        
+        
+        #  4. naikkan 1 variable index. Maksudnya, kalau sekarang 0, maka nanti jadi 1 tiap kali tambah character
+            index += 1
       
         
-        
+    #  5. return characters    
     return characters
-kalimat = "saya sedang belajar pyhton"
-result = index_text(kalimat)
+
     
-print(result)  
-    # TODO: 1. loop text
-    # TODO: 2. setiap character buat dictionary sementara dengan format: {'char': character, 'index': index}
-    # TODO: 3. tambahkan dictionary sementara ke characters list
-    # TODO: 4. naikkan 1 variable index. Maksudnya, kalau sekarang 0, maka nanti jadi 1 tiap kali tambah character
-    # TODO: 5. return characters
+    
     
 def wrap_tag(indexedText, start, end):
     """
@@ -86,40 +127,57 @@ def wrap_tag(indexedText, start, end):
     3. mengubah valua dari dictionary
     4. Manipulasi text
     """
-    # TODO: 1. loop indexedText (ini adalah kembalian dari fungsi index_text)
-    # TODO: 2. check apakah index tiap item sama dengan start. Bila iya, maka bentuk char menjadi <b>{character}. Jadi misal character adalah 'a' maka jadi '<b>a'.
-    # TODO: 3. check apakah index tiap item sama dengan end. Bila iya, maka bentuk char menjadi {character}</b>. Jadi misal character adalah 'b', maka jadi 'b</b>'
-    # TODO: 4. return indexText lagi
+    
+    
+    
     
 
     format_text = []
 
+    #  1. loop indexedText (ini adalah kembalian dari fungsi index_text)
     for item in indexedText:
         index = item ['index']
         character = item ['char']
         
-        
+        # TODO: 2. check apakah index tiap item sama dengan start. Bila iya, maka bentuk char menjadi <b>{character}. Jadi misal character adalah 'a' maka jadi '<b>a'.
         if index == start:
             format_text.append({'char': f'<b>{character}', 'index': index})
+        # TODO: 3. check apakah index tiap item sama dengan end. Bila iya, maka bentuk char menjadi {character}</b>. Jadi misal character adalah 'b', maka jadi 'b</b>'
         elif  index == end:
             format_text.append({'char': f'{character}</b>', 'index': index})
         else:
             format_text.append(item)
+   
+    #  4. return indexText lagi
     return format_text
 
 def main():
     text1 = "aku sedang belajar python"
     indexed_text = index_text(text1)
     final_chars = wrap_tag(indexed_text, 4, 9)
+    final_hasil = "".join(text["char"] for text in final_chars)
     expected1 = "aku <b>sedang</b> belajar python"
-    assert expected1 == "".join([text["char"] for text in final_chars])
-
-    # text2 = "aku <i>sedang</i> belajar python"
-    # expected2 = "aku <i><b>sedang</b></i> belajar python"
-    # indexed_text = index_text(text2)
-    # final_chars = wrap_tag(indexed_text, 4, 9)
-    # assert expected2 == "".join([text["char"] for text in final_chars])
-
+    print("TEST 1")
+    print("HASIL")
+    print(final_hasil)
+    print("Yang diinginkan...")
     print(expected1)
+    assert expected1 == final_hasil
+    print()
+
+    text2 = "aku <i>sedang</i> belajar python"
+    expected2 = "aku <i><b>sedang</b></i> belajar python"
+    indexed_text = index_text(text2)
+    final_chars = wrap_tag(indexed_text, 4, 9)
+    final_hasil = "".join(text["char"] for text in final_chars)
+    print()
+    print("TEST 2")
+    print("HASIL")
+    print(final_hasil)
+    print("Yang diinginkan...")
+    print(expected2)
+    assert expected2 == final_hasil
+
+    
 if __name__ == "__main__":
     main()
